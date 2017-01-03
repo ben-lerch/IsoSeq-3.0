@@ -60,7 +60,7 @@ __Step 1. CCS__
 
 First, convert your subreads to circular consensus sequences. You can do this with the command:
 
-     ccs --noPolish --minLength=300 --minPasses=1 --minZScore=-999 --maxDropFraction=0.8 --minPredictedAccuracy=0.8 --minSnr=4 ccs.bam subreads.bam
+     ccs --noPolish --minLength=300 --minPasses=1 --minZScore=-999 --maxDropFraction=0.8 --minPredictedAccuracy=0.8 --minSnr=4 subreads.bam ccs.bam 
 
 Where ccs.bam is where the CCSs will be output, and subreads.bam is the file containing your subreads. CCS options are described in [pbccs doc](https://github.com/PacificBiosciences/pbccs/blob/master/README.md). If you think that you have transcripts of interest that are less than 300 bp in length, be sure to adjust the `minLength` parameter. 
 Next, you will generate an XML file from your CCSs. You can do this with the commmand:
@@ -105,7 +105,7 @@ Or
 
      pbtranscript cluster [OPTIONS] isoseq_flnc.contigset.xml polished_clustered.contigset.xml --quiver --nfl=isoseq_nfl.contigset.xml --bas_fofn=my.subreadset.xml
 
-**Note**: `--quiver --nfl=isoseq_nfl.fasta|contigset.xml` must be specified in order to get Quiver polished consensus isoforms.
+**Note**: `--quiver --nfl=isoseq_nfl.fasta|contigset.xml` must be specified in order to get Quiver|Arrow polished consensus isoforms.
 
 Optionally, you may call the following command to run ICE and create unpolished consensus isoforms only.
 
@@ -187,7 +187,7 @@ You may modify Iso-Seq advanced analysis parameters for SMRT Link or pbsmrtpipe 
 | CCS | Minimum Z Score | min_zscore | -9999 | The minimum Z-Score for a subread to be included in the consensus generating process. |
 | Classify | Ignore polyA | ignore_polya | FALSE | Full-Length criteria does not require polyA tail. By default this is off, which means that polyA tails are required for a sequence to be considered full length. When it is turned on, sequences do not need polyA tails to be considered full length. |
 | Classify | Min. seq. length | min_seq_len | 300 | Minimum sequence length to output. |
-| Cluster | Minimum Quiver Accuracy | hq_quiver_min_accuracy | 0.99 | Minimum allowed Quiver accuracy to classify an isoform as hiqh-quality. |
+| Cluster | Minimum Quiver|Arrow Accuracy | hq_quiver_min_accuracy | 0.99 | Minimum allowed Quiver accuracy to classify an isoform as hiqh-quality. |
 | Cluster-Polish | Trim QVs 3' | qv_trim_3p | 30 | Ignore QV of n bases in the 3' end. |
 | Cluster-Polish | Trim QVs 5' | qv_trim_5p | 100 | Ignore QV of n bases in the 5' end. |
 | Maximum Length (max_length)  | --maxLength=15000    | Maximum length of subreads to use for generating CCS. Default = 7000 |
@@ -235,20 +235,20 @@ In order to show Iso-Seq Cluster advanced options via command line: `pbtranscrip
 | optional | Report  | --report report.csv | A CSV file, each line containing a cluster, an associated read of the cluster, and the read type. |
 | optional | Pickle  | --pickle_fn PICKLE_FN | Developers' option from which all clusters can be reconstructed. |
 | ICE | cDNA  | --cDNA_size {under1k,between1k2k,between2k3k,above3k} | Estimated cDNA size. |
-| ICE | Quiver  | --quiver | Call Quiver to polish consensus isoforms using non-full-length non-chimeric CCS reads. |
-| ICE | Finer Quiver  | --use_finer_qv | Use finer classes of QV information from CCS input instead of a single QV from FASTQ. This option is slower and consumes more memory. |
+| ICE | Quiver  | --quiver | Call Quiver or Arrow to polish consensus isoforms using non-full-length non-chimeric CCS reads. |
+| ICE | Finer Quiver or Arrow  | --use_finer_qv | Use finer classes of QV information from CCS input instead of a single QV from FASTQ. This option is slower and consumes more memory. |
 | SGE | Run SGE  | --use_sge | Instructs Cluster to use SGE. |
 | SGE | Maximum SGE Jobs  | --max_sge_jobs MAX_SGE_JOBS | The maximum number of jobs that will be submitted to SGE concurrently. |
 | SGE | SGE Job ID  | --unique_id UNIQUE_ID | Unique ID for submitting SGE jobs. |
 | SGE | BLASR Cores  | --blasr_nproc BLASR_NPROC | Number of cores for each BLASR job. |
-| SGE | Quiver CPUs  | --quiver_nproc QUIVER_NPROC | Number of CPUs each quiver job uses. |
-| IceQuiver High QV/Low QV | Minimum Quiver Accuracy  | --hq_quiver_min_accuracy HQ_QUIVER_MIN_ACCURACY | Minimum allowed quiver accuracy to classify an isoform as hiqh-quality. |
+| SGE | Quiver or Arrow CPUs  | --quiver_nproc QUIVER_NPROC | Number of CPUs each quiver or Arrow job uses. |
+| IceQuiver High QV/Low QV | Minimum Quiver or Arrow Accuracy  | --hq_quiver_min_accuracy HQ_QUIVER_MIN_ACCURACY | Minimum allowed quiver or Arrow accuracy to classify an isoform as hiqh-quality. |
 | IceQuiver High QV/Low QV | Trim QVs 5' | --qv_trim_5 QV_TRIM_5 | Ignore QV of n bases in the 5' end. |
 | IceQuiver High QV/Low QV | Trim QVs 3' | --qv_trim_3 QV_TRIM_3 | Ignore QV of n bases in the 3' end. |
-| IceQuiver High QV/Low QV | High-Quality Isoforms FASTA  | --hq_isoforms_fa output/all_quivered_hq.fa | Quiver-polished, high-quality isoforms in FASTA (default: output/all_quivered_hq.fa). |
-| IceQuiver High QV/Low QV | High-Quality Isoforms FASTQ  | --hq_isoforms_fq output/all_quivered_hq.fq | Quiver-polished, high-quality isoforms in FASTQ (default: output/all_quivered_hq.fq). |
-| IceQuiver High QV/Low QV | Low-Quality Isoforms FASTA  | --lq_isoforms_fa output/all_quivered_lq.fa | Quiver-polished, low-quality isoforms in FASTA (default: output/all_quivered_lq.fa). |
-| IceQuiver High QV/Low QV | Low-Quality Isoforms FASTQ  | --lq_isoforms_fq output/all_quivered_lq.fq | Quiver-polished, low-quality isoforms in FASTQ (default: output/all_quivered_lq.fq). |
+| IceQuiver High QV/Low QV | High-Quality Isoforms FASTA  | --hq_isoforms_fa output/all_quivered_hq.fa | Quiver or Arrow polished, high-quality isoforms in FASTA (default: output/all_quivered_hq.fa). |
+| IceQuiver High QV/Low QV | High-Quality Isoforms FASTQ  | --hq_isoforms_fq output/all_quivered_hq.fq | Quiver or Arrow polished, high-quality isoforms in FASTQ (default: output/all_quivered_hq.fq). |
+| IceQuiver High QV/Low QV | Low-Quality Isoforms FASTA  | --lq_isoforms_fa output/all_quivered_lq.fa | Quiver or Arrow polished, low-quality isoforms in FASTA (default: output/all_quivered_lq.fa). |
+| IceQuiver High QV/Low QV | Low-Quality Isoforms FASTQ  | --lq_isoforms_fq output/all_quivered_lq.fq | Quiver or Arrow polished, low-quality isoforms in FASTQ (default: output/all_quivered_lq.fq). |
 
 ## Subset Options
 In order to show pbtranscript Subset options via command line: `pbtranscript subset`.
@@ -396,13 +396,13 @@ taking into account all the QV information.
 We assign not only full-length non-chimeric CCS reads but also non-full-length CCS 
 reads into clusters based on similarity. Then for each cluster, we align raw subreads
 of its assigned ZMWs towards its consensus sequence. Finally, we load quality values
-to these alignments and polish the consensus sequence using `Quiver`.
+to these alignments and polish the consensus sequence using `Quiver` or `Arrow`.
     
-  * __Quiver__: [`Quiver`](https://github.com/PacificBiosciences/GenomicConsensus) 
+  * __Quiver__: [`Quiver|Arrow`](https://github.com/PacificBiosciences/GenomicConsensus) 
                 is a consensus and variant-calling algorithm for PacBio reads.
-                `Quiver` finds the maximum likelihood template sequence given
+                `Quiver` or `Arrow` finds the maximum likelihood template sequence given
                 PacBio reads of the template. It is used by the Iso-Seq application to polish 
-                consensus isoforms. `Quiver` uses quality values and creates 
+                consensus isoforms. `Quiver|Arrow` uses quality values and creates 
                 higher-quality consensus sequence comapred with `pbdagcon`, but is
                 more time-consuming.
 
@@ -423,7 +423,7 @@ Major differences between Iso-Seq software in SMRT Analysis v3.0 and Iso-Seq sof
 | Uses new algorithm pbccs to create CCS reads | Uses `ConsensusTools.sh` to create CCS reads |
 | Does *NOT* support using customer primers from SMRT Link | Supports using customer primers from SMRT Portal |
 | Does *NOT* support using `GMAP` to align consensus isoforms to reference from SMRT Link | Supports using `GMAP` to align consensus isoforms to reference from SMRT Portal |
-| SMRT Link has two protocols: `IsoSeq Classify Only` and `IsoSeq`. The `IsoSeq Classify Only` protocol only classifies reads, while the `IsoSeq` protocol not only classifies reads but also generates consensus isoforms using ICE and polish them using `Quiver`. | SMRT Portal has one protocol: RS_IsoSeq, which provides options such that users can calssify reads, or run ICE and generate unpolished consensus isoforms or polish consensus isoforms using `Quiver`. |
+| SMRT Link has two protocols: `IsoSeq Classify Only` and `IsoSeq`. The `IsoSeq Classify Only` protocol only classifies reads, while the `IsoSeq` protocol not only classifies reads but also generates consensus isoforms using ICE and polish them using `Quiver` or `Arrow`. | SMRT Portal has one protocol: RS_IsoSeq, which provides options such that users can calssify reads, or run ICE and generate unpolished consensus isoforms or polish consensus isoforms using `Quiver` or `Arrow`. |
 
 
 ##Handling PacBio RS and PacBio RS II data
